@@ -3,17 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <title>Platonus и Видео</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #a2d4f5, #d0f0fa); /* морской голубой свет */
+            color: #00334d;
+            padding: 30px;
+            text-align: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        h1 {
+            color: #004080;
+        }
+
+        .link-button {
+            display: inline-block;
+            margin: 20px 0;
+            padding: 12px 24px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .link-button:hover {
+            background-color: #0056b3;
+        }
+
+        video {
+            border: 2px solid #ccc;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-width: 100%;
+        }
+    </style>
 </head>
 <body>
     <h1>Добро пожаловать!</h1>
 
-    <!-- ССЫЛКА -->
-    <p>
-        Перейти на сайт: 
-        <a href="https://platonus.yu.edu.kz" target="_blank">Platonus</a>
-    </p>
+    <!-- КНОПКА-СЫЛКА -->
+    <a class="link-button" href="https://platonus.yu.edu.kz" target="_blank">
+        Перейти на сайт Platonus
+    </a>
 
-    <!-- ВИДЕОФАЙЛ ИЗ ПАПКИ "video/11.mp4" -->
+    <!-- ВИДЕО -->
     <h2>Смотрите видео:</h2>
     <video width="640" height="360" controls>
         <source src="video/11.mp4" type="video/mp4">
@@ -21,3 +58,4 @@
     </video>
 </body>
 </html>
+
