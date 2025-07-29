@@ -7,7 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #a2d4f5, #d0f0fa); /* морской голубой свет */
+            background: linear-gradient(to bottom, #a2d4f5, #d0f0fa);
             color: #00334d;
             padding: 30px;
             text-align: center;
@@ -35,12 +35,12 @@
             background-color: #0056b3;
         }
 
-        video {
+        iframe {
             border: 2px solid #ccc;
             border-radius: 8px;
             margin-top: 20px;
             max-width: 100%;
-            background-color: #000; /* черный фон внутри видео */
+            background-color: #000;
         }
 
         .controls {
@@ -66,53 +66,51 @@
 <body>
     <h1>Добро пожаловать!</h1>
 
-    <!-- КНОПКА-СЫЛКА -->
     <a class="link-button" href="https://platonus.yu.edu.kz" target="_blank">
         Перейти на сайт Platonus
     </a>
 
-    <!-- ВИДЕО -->
     <h2>Смотрите видео:</h2>
     <div id="video-container">
-        <video id="my-video" width="640" height="360" controls>
-            <source src="video/11.mp4" type="video/mp4">
-            Ваш браузер не поддерживает видео.
-        </video>
+        <!-- ВСТАВЬ СЮДА СВОЙ YouTube ID -->
+        <iframe id="yt-video" width="640" height="360" src="https://youtu.be/K72GUDXU4pk?si=HNibnFcaCFfwRUu3" allow="picture-in-picture" allowfullscreen></iframe>
     </div>
 
-    <!-- КНОПКИ УПРАВЛЕНИЯ ВИДЕО -->
     <div class="controls">
         <button onclick="togglePlay()">Play/Pause</button>
         <button onclick="enterPiP()">Картинка в картинке</button>
     </div>
 
+    <!-- YouTube API -->
+    <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        const video = document.getElementById('my-video');
+        let player;
 
-        // Функция для переключения воспроизведения/паузы
+        function onYouTubeIframeAPIReady() {
+            player = new YT.Player('yt-video', {
+                events: {
+                    // готово
+                }
+            });
+        }
+
         function togglePlay() {
-            if (video.paused) {
-                video.play();
+            if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
+                player.pauseVideo();
             } else {
-                video.pause();
+                player.playVideo();
             }
         }
 
-        // Функция для активации режима картинка в картинке
         function enterPiP() {
-            if (video.requestPictureInPicture) {
-                video.requestPictureInPicture();
+            const iframe = document.getElementById('yt-video');
+            if ('requestPictureInPicture' in document.createElement('video')) {
+                // К сожалению, iframe YouTube не поддерживает PiP напрямую в большинстве браузеров
+                alert("Картинка в картинке может не поддерживаться для YouTube во всех браузерах.\nИспользуйте встроенное видео для полной поддержки.");
+            } else {
+                alert("Ваш браузер не поддерживает Picture-in-Picture.");
             }
         }
-
-        // Проверка поддержки Picture-in-Picture
-        video.addEventListener('enterpictureinpicture', () => {
-            console.log('Видео в картинке в картинке');
-        });
-
-        video.addEventListener('leavepictureinpicture', () => {
-            console.log('Выход из режима картинка в картинке');
-        });
     </script>
 </body>
 </html>
