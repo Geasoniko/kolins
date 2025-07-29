@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <title>Platonus и Образовательные программы</title>
+  <title>Образовательные программы</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     body {
@@ -97,7 +97,7 @@
 </head>
 <body>
 
-  <h1>Добро пожаловать!</h1>
+  <h1>Образовательные программы</h1>
   <a class="link-button" href="https://platonus.yu.edu.kz" target="_blank">Перейти на сайт Platonus</a>
 
   <h2>Смотрите видео:</h2>
@@ -109,10 +109,10 @@
     <button onclick="enterPiP()">Картинка в картинке</button>
   </div>
 
-  <h2>Образовательные программы</h2>
+  <h2>Список специальностей</h2>
   <div id="cards-container" class="cards-container"></div>
 
-  <!-- Библиотека для чтения CSV -->
+  <!-- Подключение библиотеки для чтения CSV -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
     function enterPiP() {
@@ -134,12 +134,11 @@
           card.className = "card";
 
           card.innerHTML = `
-            <h3>${row["код и наименование образовательной программы"] || "Без названия"}</h3>
-            <p><strong>Группа:</strong> ${row["Номер группы образовательной программы"] || ""} – ${row["Наименование групп образовательных программ"] || ""}</p>
+            <h3>${row["БББ аты және коды"] || "Название не указано"}</h3>
+            <p><strong>Номер группы:</strong> ${row["Номер группы образовательной программы"] || ""}</p>
             <p><strong>БББ тобы:</strong> ${row["БББ тобы"] || ""}</p>
-            <p><strong>БББ аты және коды:</strong> ${row["БББ аты және коды"] || ""}</p>
-            <p><strong>Профильные предметы:</strong> ${[row["Профильные предметы"], row["Профильные предметы _1"]].filter(Boolean).join(", ")}</p>
-            <p><strong>Стоимость:</strong> ${row["Стоимость обучения"] || ""}</p>
+            <p><strong>Профильные предметы:</strong> ${[row["Таңдау пәні 1"], row["Таңдау пәні  2"]].filter(Boolean).join(", ")}</p>
+            <p><strong>Оқу ақысы:</strong> ${row["Оқу ақысы"] || ""}</p>
           `;
 
           container.appendChild(card);
@@ -149,4 +148,5 @@
   </script>
 </body>
 </html>
+
 
