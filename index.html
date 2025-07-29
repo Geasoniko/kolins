@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Platonus и Видео</title>
     <style>
         body {
@@ -41,6 +42,25 @@
             max-width: 100%;
             background-color: #000; /* черный фон внутри видео */
         }
+
+        .controls {
+            margin-top: 15px;
+            text-align: center;
+        }
+
+        button {
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        button:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
     </style>
 </head>
 <body>
@@ -53,11 +73,49 @@
 
     <!-- ВИДЕО -->
     <h2>Смотрите видео:</h2>
-    <video width="640" height="360" controls>
-        <source src="video/11.mp4" type="video/mp4">
-        Ваш браузер не поддерживает видео.
-    </video>
+    <div id="video-container">
+        <video id="my-video" width="640" height="360" controls>
+            <source src="video/11.mp4" type="video/mp4">
+            Ваш браузер не поддерживает видео.
+        </video>
+    </div>
+
+    <!-- КНОПКИ УПРАВЛЕНИЯ ВИДЕО -->
+    <div class="controls">
+        <button onclick="togglePlay()">Play/Pause</button>
+        <button onclick="enterPiP()">Картинка в картинке</button>
+    </div>
+
+    <script>
+        const video = document.getElementById('my-video');
+
+        // Функция для переключения воспроизведения/паузы
+        function togglePlay() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+
+        // Функция для активации режима картинка в картинке
+        function enterPiP() {
+            if (video.requestPictureInPicture) {
+                video.requestPictureInPicture();
+            }
+        }
+
+        // Проверка поддержки Picture-in-Picture
+        video.addEventListener('enterpictureinpicture', () => {
+            console.log('Видео в картинке в картинке');
+        });
+
+        video.addEventListener('leavepictureinpicture', () => {
+            console.log('Выход из режима картинка в картинке');
+        });
+    </script>
 </body>
 </html>
+
 
 
