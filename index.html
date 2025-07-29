@@ -132,66 +132,69 @@
         video.requestPictureInPicture();
       }
     }
+    </script>
 
-    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIuMg1pGPAE3h0bhRL6WA2pVHpEwcgK4Gl6PVCRryEnmZ5cZDZvBGnjYh01JU2YmZRXmvgZLanFlZo/pub?output=csv";
+<script>
+  const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIuMg1pGPAE3h0bhRL6WA2pVHpEwcgK4Gl6PVCRryEnmZ5cZDZvBGnjYh01JU2YmZRXmvgZLanFlZo/pub?output=csv";
 
-    async function fetchCSV(url) {
-      const response = await fetch(url);
-      return await response.text();
-    }
+  async function fetchCSV(url) {
+    const response = await fetch(url);
+    return await response.text();
+  }
 
-    function parseCSV(csvText) {
-      const rows = csvText.trim().split('\n').map(row => row.split(','));
-      const headers = rows[0];
-      const data = rows.slice(1).map(row => {
-        const obj = {};
-        row.forEach((cell, i) => {
-          obj[headers[i].trim()] = cell.trim();
-        });
-        return obj;
+  function parseCSV(csvText) {
+    const rows = csvText.trim().split('\n').map(row => row.split(','));
+    const headers = rows[0];
+    const data = rows.slice(1).map(row => {
+      const obj = {};
+      row.forEach((cell, i) => {
+        obj[headers[i].trim()] = cell.trim();
       });
-      return data;
-    }
+      return obj;
+    });
+    return data;
+  }
 
-    function renderCards(data) {
-      const container = document.getElementById('cards-container');
-      container.innerHTML = '';
+  function renderCards(data) {
+    const container = document.getElementById('cards-container');
+    container.innerHTML = '';
 
-      data.forEach(item => {
-        const groupNum = item['Номер группы образовательной программы'] || '';
-        const groupName = item['Наименование групп образовательных программ'] || '';
-        const programName = item['код и наименование образовательной программы'] || '';
-        const bbb = item['БББ аты және коды'] || '';
-        const profile1 = item['Профильные предметы '] || '';
-        const profile2 = item['Профильные предметы _1'] || '';
-        const price = item['Стоимость обучения'] || '';
+    data.forEach(item => {
+      const groupNum = item['Номер группы образовательной программы'] || '';
+      const groupName = item['Наименование групп образовательных программ'] || '';
+      const programName = item['код и наименование образовательной программы'] || '';
+      const bbb = item['БББ аты және коды'] || '';
+      const profile1 = item['Профильные предметы'] || '';
+      const profile2 = item['Профильные предметы _1'] || '';
+      const price = item['Стоимость обучения'] || '';
 
-        const card = document.createElement('div');
-        card.className = 'card';
+      const card = document.createElement('div');
+      card.className = 'card';
 
-        card.innerHTML = `
-          <h3>${programName}</h3>
-          <p><strong>Группа:</strong> ${groupNum} – ${groupName}</p>
-          <p><strong>БББ:</strong> ${bbb}</p>
-          <p><strong>Профильные предметы:</strong> ${profile1}${profile2 ? ', ' + profile2 : ''}</p>
-          <p><strong>Стоимость обучения:</strong> ${price}</p>
-        `;
+      card.innerHTML = `
+        <h3>${programName}</h3>
+        <p><strong>Группа:</strong> ${groupNum} – ${groupName}</p>
+        <p><strong>БББ:</strong> ${bbb}</p>
+        <p><strong>Профильные предметы:</strong> ${profile1}${profile2 ? ', ' + profile2 : ''}</p>
+        <p><strong>Стоимость обучения:</strong> ${price}</p>
+      `;
 
-        container.appendChild(card);
-      });
+      container.appendChild(card);
+    });
 
-      document.getElementById('status').textContent = '';
-    }
+    document.getElementById('status').textContent = '';
+  }
 
-    fetchCSV(CSV_URL)
-      .then(csv => {
-        const data = parseCSV(csv);
-        renderCards(data);
-      })
-      .catch(error => {
-        console.error(error);
-        document.getElementById('status').textContent = 'Ошибка загрузки данных.';
-      });
-  </script>
+  fetchCSV(CSV_URL)
+    .then(csv => {
+      const data = parseCSV(csv);
+      renderCards(data);
+    })
+    .catch(error => {
+      console.error(error);
+      document.getElementById('status').textContent = 'Ошибка загрузки данных.';
+    });
+</script>
+
 </body>
 </html>
