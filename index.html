@@ -1,117 +1,118 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Platonus и Видео</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to bottom, #a2d4f5, #d0f0fa);
-            color: #00334d;
-            padding: 30px;
-            text-align: center;
-            min-height: 100vh;
-            margin: 0;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Список специальностей</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom, #a2d4f5, #d0f0fa);
+      padding: 30px;
+      text-align: center;
+      color: #00334d;
+    }
 
-        h1 {
-            color: #004080;
-        }
+    h1 {
+      color: #004080;
+    }
 
-        .link-button {
-            display: inline-block;
-            margin: 20px 0;
-            padding: 12px 24px;
-            background-color: #007BFF;
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            border-radius: 8px;
-            transition: background-color 0.3s ease;
-        }
+    #status {
+      margin: 20px 0;
+      font-style: italic;
+    }
 
-        .link-button:hover {
-            background-color: #0056b3;
-        }
+    .cards-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 20px;
+      margin-top: 30px;
+    }
 
-        iframe {
-            border: 2px solid #ccc;
-            border-radius: 8px;
-            margin-top: 20px;
-            max-width: 100%;
-            background-color: #000;
-        }
+    .card {
+      background-color: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      width: 260px;
+      text-align: left;
+      transition: transform 0.2s ease;
+    }
 
-        .controls {
-            margin-top: 15px;
-            text-align: center;
-        }
+    .card:hover {
+      transform: scale(1.03);
+      background-color: #f2faff;
+    }
 
-        button {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            margin: 5px;
-            cursor: pointer;
-            border-radius: 5px;
-        }
+    .card h3 {
+      margin-top: 0;
+      color: #004080;
+      font-size: 18px;
+    }
 
-        button:hover {
-            background: rgba(0, 0, 0, 0.8);
-        }
-    </style>
+    .card p {
+      margin: 8px 0;
+      font-size: 15px;
+    }
+  </style>
 </head>
 <body>
-    <h1>Добро пожаловать!</h1>
+  <h1>Список специальностей</h1>
+  <div id="status">Загрузка данных...</div>
+  <div class="cards-container" id="cards-container"></div>
 
-    <a class="link-button" href="https://platonus.yu.edu.kz" target="_blank">
-        Перейти на сайт Platonus
-    </a>
+  <script>
+    const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIuMg1pGPAE3h0bhRL6WA2pVHpEwcgK4Gl6PVCRryEnmZ5cZDZvBGnjYh01JU2YmZRXmvgZLanFlZo/pub?output=csv";
 
-    <h2>Смотрите видео:</h2>
-    <div id="video-container">
-        <!-- ВСТАВЬ СЮДА СВОЙ YouTube ID -->
-        <iframe id="yt-video" width="640" height="360" src="https://youtu.be/K72GUDXU4pk?si=HNibnFcaCFfwRUu3" allow="picture-in-picture" allowfullscreen></iframe>
-    </div>
+    async function fetchCSV(url) {
+      const response = await fetch(url);
+      return await response.text();
+    }
 
-    <div class="controls">
-        <button onclick="togglePlay()">Play/Pause</button>
-        <button onclick="enterPiP()">Картинка в картинке</button>
-    </div>
+    function parseCSV(csvText) {
+      const rows = csvText.trim().split('\n').map(row => row.split(','));
+      const headers = rows[0];
+      const data = rows.slice(1).map(row => {
+        const obj = {};
+        row.forEach((cell, i) => {
+          obj[headers[i]] = cell;
+        });
+        return obj;
+      });
+      return data;
+    }
 
-    <!-- YouTube API -->
-    <script src="https://www.youtube.com/iframe_api"></script>
-    <script>
-        let player;
+    function renderCards(data) {
+      const container = document.getElementById('cards-container');
+      container.innerHTML = '';
 
-        function onYouTubeIframeAPIReady() {
-            player = new YT.Player('yt-video', {
-                events: {
-                    // готово
-                }
-            });
-        }
+      data.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
 
-        function togglePlay() {
-            if (player && player.getPlayerState() === YT.PlayerState.PLAYING) {
-                player.pauseVideo();
-            } else {
-                player.playVideo();
-            }
-        }
+        card.innerHTML = `
+          <h3>${item['Специальность'] || 'Без названия'}</h3>
+          <p><strong>Минимальный балл:</strong> ${item['Минимальный балл'] || '—'}</p>
+          <p><strong>Стоимость обучения:</strong> ${item['Стоимость'] || '—'}</p>
+        `;
 
-        function enterPiP() {
-            const iframe = document.getElementById('yt-video');
-            if ('requestPictureInPicture' in document.createElement('video')) {
-                // К сожалению, iframe YouTube не поддерживает PiP напрямую в большинстве браузеров
-                alert("Картинка в картинке может не поддерживаться для YouTube во всех браузерах.\nИспользуйте встроенное видео для полной поддержки.");
-            } else {
-                alert("Ваш браузер не поддерживает Picture-in-Picture.");
-            }
-        }
-    </script>
+        container.appendChild(card);
+      });
+
+      document.getElementById('status').textContent = '';
+    }
+
+    fetchCSV(CSV_URL)
+      .then(csv => {
+        const data = parseCSV(csv);
+        renderCards(data);
+      })
+      .catch(error => {
+        console.error(error);
+        document.getElementById('status').textContent = 'Ошибка загрузки данных.';
+      });
+  </script>
 </body>
 </html>
 
