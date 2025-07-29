@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Список специальностей</title>
+  <title>Platonus</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,12 +11,56 @@
       padding: 30px;
       text-align: center;
       color: #00334d;
+      margin: 0;
     }
 
-    h1 {
+    h1, h2 {
       color: #004080;
     }
 
+    .link-button {
+      display: inline-block;
+      margin: 20px 0;
+      padding: 12px 24px;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      font-size: 16px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .link-button:hover {
+      background-color: #0056b3;
+    }
+
+    video {
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      margin-top: 20px;
+      max-width: 100%;
+      background-color: #000;
+    }
+
+    .controls {
+      margin-top: 15px;
+    }
+
+    button {
+      background: rgba(0, 0, 0, 0.5);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin: 5px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    button:hover {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Карточки программ */
     #status {
       margin: 20px 0;
       font-style: italic;
@@ -35,7 +79,7 @@
       padding: 20px;
       border-radius: 12px;
       box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-      width: 260px;
+      width: 280px;
       text-align: left;
       transition: transform 0.2s ease;
     }
@@ -53,16 +97,42 @@
 
     .card p {
       margin: 8px 0;
-      font-size: 15px;
+      font-size: 14px;
     }
   </style>
 </head>
 <body>
-  <h1>Список специальностей</h1>
+  <h1>Добро пожаловать!</h1>
+
+  <!-- ССЫЛКА -->
+  <a class="link-button" href="https://platonus.yu.edu.kz" target="_blank">Перейти на сайт Platonus</a>
+
+  <!-- ВИДЕО -->
+  <h2>Смотрите видео:</h2>
+  <div id="video-container">
+    <video id="my-video" width="640" height="360" controls>
+      <source src="video/11.mp4" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+  </div>
+
+  <div class="controls">
+    <button onclick="enterPiP()">Картинка в картинке</button>
+  </div>
+
+  <!-- ОБРАЗОВАТЕЛЬНЫЕ ПРОГРАММЫ -->
+  <h2>Образовательные программы</h2>
   <div id="status">Загрузка данных...</div>
   <div class="cards-container" id="cards-container"></div>
 
   <script>
+    const video = document.getElementById('my-video');
+    function enterPiP() {
+      if (video.requestPictureInPicture) {
+        video.requestPictureInPicture();
+      }
+    }
+
     const CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRIuMg1pGPAE3h0bhRL6WA2pVHpEwcgK4Gl6PVCRryEnmZ5cZDZvBGnjYh01JU2YmZRXmvgZLanFlZo/pub?output=csv";
 
     async function fetchCSV(url) {
@@ -76,7 +146,7 @@
       const data = rows.slice(1).map(row => {
         const obj = {};
         row.forEach((cell, i) => {
-          obj[headers[i]] = cell;
+          obj[headers[i].trim()] = cell.trim();
         });
         return obj;
       });
@@ -88,13 +158,23 @@
       container.innerHTML = '';
 
       data.forEach(item => {
+        const groupNum = item['Номер группы образовательной программы'] || '';
+        const groupName = item['Наименование групп образовательных программ'] || '';
+        const programName = item['код и наименование образовательной программы'] || '';
+        const bbb = item['БББ аты және коды'] || '';
+        const profile1 = item['Профильные предметы '] || '';
+        const profile2 = item['Профильные предметы _1'] || '';
+        const price = item['Стоимость обучения'] || '';
+
         const card = document.createElement('div');
         card.className = 'card';
 
         card.innerHTML = `
-          <h3>${item['Специальность'] || 'Без названия'}</h3>
-          <p><strong>Минимальный балл:</strong> ${item['Минимальный балл'] || '—'}</p>
-          <p><strong>Стоимость обучения:</strong> ${item['Стоимость'] || '—'}</p>
+          <h3>${programName}</h3>
+          <p><strong>Группа:</strong> ${groupNum} – ${groupName}</p>
+          <p><strong>БББ:</strong> ${bbb}</p>
+          <p><strong>Профильные предметы:</strong> ${profile1}${profile2 ? ', ' + profile2 : ''}</p>
+          <p><strong>Стоимость обучения:</strong> ${price}</p>
         `;
 
         container.appendChild(card);
@@ -115,6 +195,3 @@
   </script>
 </body>
 </html>
-
-
-
